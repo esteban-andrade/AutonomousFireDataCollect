@@ -1,6 +1,12 @@
 #include <boost/format.hpp>
 #include "usb_packet_driver.h"
 
+static const int TIME_OUT_TIMER_WAIT = 250;
+static const int TIME_OUT_TIME_CONTROL_TRANSFER = 5;
+static const int TIME_OUT_CONTROL_TRANSFER = 0;
+static const int TIME_OUT_BULK_TRANSFER = 0;
+static const int DEFAULT_LENGTH_PRE_SET = 256;
+
 namespace usb_packet_driver
 {
   UsbPacketDriver::UsbPacketDriver(int vendor_id, int product_id):
@@ -36,17 +42,17 @@ namespace usb_packet_driver
 
   bool UsbPacketDriver::get_next_packet(std::vector<unsigned char> &packet)
   {
-    packet_queue_.mtx.lock();
+    //packet_queue_.mtx.lock();
     if (!packet_queue_.data.empty())
     {
       buffer next_data = packet_queue_.data.front();
       unsigned int data_array_size = sizeof(next_data.data);
       packet.insert(packet.end(), &next_data.data[0], &next_data.data[data_array_size]);
       packet_queue_.data.pop();
-      packet_queue_.mtx.unlock();
+      //packet_queue_.mtx.unlock();
       return true;
     }
-    packet_queue_.mtx.unlock();
+   // packet_queue_.mtx.unlock();
     return false;
   }
 
@@ -97,9 +103,9 @@ namespace usb_packet_driver
       ROS_DEBUG("wait for next chunk");
       return;
     }
-    packet_queue_.mtx.lock();
+   // packet_queue_.mtx.lock();
     packet_queue_.data.push(usb_buffer_);
-    packet_queue_.mtx.unlock();
+    //packet_queue_.mtx.unlock();
   }
 
   int UsbPacketDriver::poll_data(void)
@@ -123,7 +129,7 @@ namespace usb_packet_driver
 
       case INIT:
         ROS_INFO("stop interface 2 FRAME\n");
-        r = libusb_control_transfer(devh_,1,0x0b,0,2,data,0,100);
+        r = libusb_control_transfer(devh_,1,0x0b,0,2,data,0,TIME_OUT_TIME_CONTROL_TRANSFER);
         if (r < 0)
         {
           ROS_ERROR("Control Out error %d\n", r);
@@ -137,7 +143,7 @@ namespace usb_packet_driver
 
       case INIT_1:
         ROS_INFO("stop interface 1 FILEIO\n");
-        r = libusb_control_transfer(devh_,1,0x0b,0,1,data,0,100);
+        r = libusb_control_transfer(devh_,1,0x0b,0,1,data,0,TIME_OUT_TIME_CONTROL_TRANSFER);
         if (r < 0)
         {
           ROS_ERROR("Control Out error %d\n", r);
@@ -151,7 +157,7 @@ namespace usb_packet_driver
 
       case INIT_2:
         ROS_INFO("\nstart interface 1 FILEIO\n");
-        r = libusb_control_transfer(devh_,1,0x0b,1,1,data,0,100);
+        r = libusb_control_transfer(devh_,1,0x0b,1,1,data,0,TIME_OUT_TIME_CONTROL_TRANSFER);
         if (r < 0)
         {
           ROS_ERROR("Control Out error %d\n", r);
@@ -168,10 +174,10 @@ namespace usb_packet_driver
         ROS_INFO("\nask for CameraFiles.zip on EP 0x83:\n");
 
         int transferred = 0;
-        char my_string[128];
-
+        //char my_string[128];
+        char my_string[512];
         //--------- write string: {"type":"openFile","data":{"mode":"r","path":"CameraFiles.zip"}}
-        int length = 16;
+        int length = DEFAULT_LENGTH_PRE_SET;
         unsigned char my_string2[16]={0xcc,0x01,0x00,0x00,0x01,0x00,0x00,0x00,0x41,0x00,0x00,0x00,0xF8,0xB3,0xF7,0x00};
         ROS_INFO("\nEP 0x02 to be sent Hexcode: %i Bytes[",length);
         int i;
@@ -181,7 +187,7 @@ namespace usb_packet_driver
         }
         ROS_INFO(" ]\n");
 
-        r = libusb_bulk_transfer(devh_, 2, my_string2, length, &transferred, 0);
+        r = libusb_bulk_transfer(devh_, 2, my_string2, length, &transferred, TIME_OUT_BULK_TRANSFER);
         if(r == 0 && transferred == length) {
           ROS_INFO("\nWrite successful!");
         } else
@@ -193,14 +199,15 @@ namespace usb_packet_driver
 
         strcpy(my_string,"{\"type\":\"openFile\",\"data\":{\"mode\":\"r\",\"path\":\"CameraFiles.zip\"}}");
 
-        length = strlen(my_string)+1;
+        length = strlen(my_string)+128;
+        //length = strlen(my_string)+1;
         ROS_INFO("\nEP 0x02 to be sent: %s", my_string);
 
         // avoid error: invalid conversion from ‘char*’ to ‘unsigned char*’ [-fpermissive]
         unsigned char *my_string1 = (unsigned char*)my_string;
         //my_string1 = (unsigned char*)my_string;
 
-        r = libusb_bulk_transfer(devh_, 2, my_string1, length, &transferred, 0);
+        r = libusb_bulk_transfer(devh_, 2, my_string1, length, &transferred, TIME_OUT_BULK_TRANSFER);
         if(r == 0 && transferred == length)
         {
           ROS_INFO("\nWrite successful!");
@@ -213,7 +220,7 @@ namespace usb_packet_driver
         }
 
         //--------- write string: {"type":"readFile","data":{"streamIdentifier":10}}
-        length = 16;
+        //length = 16;
         unsigned char my_string3[16]={0xcc,0x01,0x00,0x00,0x01,0x00,0x00,0x00,0x33,0x00,0x00,0x00,0xef,0xdb,0xc1,0xc1};
         ROS_INFO("\nEP 0x02 to be sent Hexcode: %i Bytes[",length);
         for (i = 0; i < length; i++)
@@ -222,7 +229,7 @@ namespace usb_packet_driver
         }
         ROS_INFO(" ]\n");
 
-        r = libusb_bulk_transfer(devh_, 2, my_string3, length, &transferred, 0);
+        r = libusb_bulk_transfer(devh_, 2, my_string3, length, &transferred, TIME_OUT_BULK_TRANSFER);
         if(r == 0 && transferred == length)
         {
           ROS_INFO("\nWrite successful!");
@@ -235,13 +242,14 @@ namespace usb_packet_driver
 
         //strcpy(  my_string, "{\"type\":\"setOption\",\"data\":{\"option\":\"autoFFC\",\"value\":true}}");
         strcpy(my_string,"{\"type\":\"readFile\",\"data\":{\"streamIdentifier\":10}}");
-        length = strlen(my_string)+1;
+        length = strlen(my_string)+128;
+        //length = strlen(my_string)+1;
         ROS_INFO("\nEP 0x02 to be sent %i Bytes: %s", length, my_string);
 
         // avoid error: invalid conversion from ‘char*’ to ‘unsigned char*’ [-fpermissive]
         my_string1 = (unsigned char*)my_string;
 
-        r = libusb_bulk_transfer(devh_, 2, my_string1, length, &transferred, 0);
+        r = libusb_bulk_transfer(devh_, 2, my_string1, length, &transferred, TIME_OUT_BULK_TRANSFER);
         if(r == 0 && transferred == length)
         {
           ROS_INFO("\nWrite successful!");
@@ -261,7 +269,7 @@ namespace usb_packet_driver
       case ASK_VIDEO:
         ROS_INFO("\nAsk for video stream, start EP 0x85:\n");
 
-        r = libusb_control_transfer(devh_,1,0x0b,1,2,data, 2,200);
+        r = libusb_control_transfer(devh_,1,0x0b,1,2,data, 2,TIME_OUT_CONTROL_TRANSFER);
         if (r < 0)
         {
           ROS_ERROR("Control Out error %d\n", r);
@@ -277,7 +285,7 @@ namespace usb_packet_driver
         // endless loop
         // poll Frame Endpoints 0x85
         // don't change timeout=100ms
-        r = libusb_bulk_transfer(devh_, 0x85, usb_buffer_.data, sizeof(usb_buffer_.data), &actual_length_, 200);
+        r = libusb_bulk_transfer(devh_, 0x85, usb_buffer_.data, sizeof(usb_buffer_.data), &actual_length_, TIME_OUT_TIMER_WAIT);
         switch(r){
           case LIBUSB_ERROR_TIMEOUT:
             ROS_ERROR("LIBUSB_ERROR_TIMEOUT");
@@ -306,10 +314,10 @@ namespace usb_packet_driver
     }
 
     // poll Endpoints 0x81, 0x83
-    r = libusb_bulk_transfer(devh_, 0x81, usb_buffer_.data, sizeof(usb_buffer_.data), &actual_length_, 10);
+    r = libusb_bulk_transfer(devh_, 0x81, usb_buffer_.data, sizeof(usb_buffer_.data), &actual_length_, TIME_OUT_TIME_CONTROL_TRANSFER);
     print_bulk_result("0x81",EP81_error_, r, actual_length_, usb_buffer_.data);
 
-    r = libusb_bulk_transfer(devh_, 0x83, usb_buffer_.data, sizeof(usb_buffer_.data), &actual_length_, 10);
+    r = libusb_bulk_transfer(devh_, 0x83, usb_buffer_.data, sizeof(usb_buffer_.data), &actual_length_, TIME_OUT_TIME_CONTROL_TRANSFER);
     print_bulk_result("0x83",EP83_error_, r, actual_length_, usb_buffer_.data);
   }
 
@@ -436,3 +444,4 @@ namespace usb_packet_driver
     }
   }
 };
+//https://www.freebsd.org/cgi/man.cgi?query=libusb_bulk_transfer&apropos=0&sektion=3&manpath=FreeBSD+11-current&format=html

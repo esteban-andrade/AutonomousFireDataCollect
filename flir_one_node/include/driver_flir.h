@@ -4,7 +4,6 @@
 #include <boost/thread/mutex.hpp>
 
 #include <vector>
-
 #include <ros/ros.h>
 #include <camera_info_manager/camera_info_manager.h>
 #include <image_transport/image_transport.h>

@@ -10,13 +10,15 @@
 #ifndef USB_PACKET_DRIVER_H
 #define USB_PACKET_DRIVER_H
 
-#define BUF85SIZE 1048576
+//#define BUF85SIZE 1048576
+#define BUF85SIZE 5242880
 #include <libusb.h>
 #include <queue>
 #include <vector>
 #include <mutex>
 #include <ros/ros.h>
 
+//raw data
 struct buffer
 {
   int pointer;

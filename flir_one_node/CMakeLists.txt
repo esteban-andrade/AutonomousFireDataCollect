@@ -4,6 +4,9 @@ project(flir_one_node)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+set (CMAKE_CXX_STANDARD 11)
+SET(CMAKE_BUILD_TYPE Release)
+set (CMAKE_CXX_COMPILE_FEATURES "-GNinja")
 find_package(catkin REQUIRED COMPONENTS
   image_transport
   roscpp
