@@ -61,7 +61,8 @@ namespace usb_packet_driver
     char EP85_error_[50];
     int actual_length_;
     buffer usb_buffer_;
-    packet_container packet_queue_;
+    //packet_container packet_queue_;
+    packet_container packet_deque_;
 
     enum states_t {INIT, INIT_1, INIT_2, ASK_ZIP, ASK_VIDEO, POOL_FRAME, ERROR};
     states_t states_;
