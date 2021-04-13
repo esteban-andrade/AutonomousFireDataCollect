@@ -48,11 +48,14 @@ namespace usb_packet_driver
       buffer next_data = packet_queue_.data.front();
       unsigned int data_array_size = sizeof(next_data.data);
       packet.insert(packet.end(), &next_data.data[0], &next_data.data[data_array_size]);
-      packet_queue_.data.pop();
+      packet_queue_.data.pop_front();
+      packet_queue_.data.shrink_to_fit();
       //packet_queue_.mtx.unlock();
       return true;
     }
    // packet_queue_.mtx.unlock();
+   packet_queue_.data.clear();
+   packet_queue_.data.shrink_to_fit();
     return false;
   }
 
@@ -104,7 +107,8 @@ namespace usb_packet_driver
       return;
     }
    // packet_queue_.mtx.lock();
-    packet_queue_.data.push(usb_buffer_);
+    packet_queue_.data.push_front(usb_buffer_);
+    packet_queue_.data.shrink_to_fit();
     //packet_queue_.mtx.unlock();
   }
 

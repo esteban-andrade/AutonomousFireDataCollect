@@ -17,7 +17,7 @@
 #include <vector>
 #include <mutex>
 #include <ros/ros.h>
-
+#include <deque>
 //raw data
 struct buffer
 {
@@ -27,7 +27,8 @@ struct buffer
 
 struct packet_container
 {
-  std::queue<buffer> data;  /**< The container of goals. */
+ // std::queue<buffer> data;  /**< The container of goals. */
+ std::deque<buffer>data;
   std::mutex mtx;           /**< Mutex to enable thread safe operations. */
 };
 
