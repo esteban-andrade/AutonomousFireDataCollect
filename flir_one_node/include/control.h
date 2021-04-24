@@ -16,7 +16,7 @@
 #include <image_transport/image_transport.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
-
+#include <std_msgs/Bool.h>
 #include <sstream>
 #include <iostream>
 #include <string>
@@ -30,8 +30,8 @@
 
 #include "driver_flir.h"
 
-#define DATA_POLLING_THREAD_DELAY_MS 100
-#define IMAGE_PUBLISH_THREAD_DELAY_MS 50
+// #define DATA_POLLING_THREAD_DELAY_MS 100
+// #define IMAGE_PUBLISH_THREAD_DELAY_MS 50
 
 class Control
 {
@@ -57,6 +57,8 @@ class Control
      * @brief Thread to continously publish the data image to ROS
     */
     void dataPublisherThread(void);
+
+    void statusPublisherThread(void);
 
   private:
     ros::NodeHandle nh_;

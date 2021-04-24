@@ -12,15 +12,17 @@
  */
 
 #include "control.h"
+static const int DATA_POLLING_THREAD_DELAY_MS = 100; //100 //50
+static const int IMAGE_PUBLISH_THREAD_DELAY_MS = 50; // 50 //25
 
-Control::Control(ros::NodeHandle nh):
-  nh_(nh),
-  it_(nh)
+Control::Control(ros::NodeHandle nh) : nh_(nh),
+                                       it_(nh)
 {
   // Initialise publishers
   ir_pub_ = it_.advertise("flirone/images/ir_16b", 1);
   rgb_pub_ = it_.advertise("flirone/images/rgb_jpg", 1);
   // status_pub_ = it_.advertise("flirone/status", 1);
+  status_pub_ = nh_.advertise<std_msgs::Bool>("flirone/ok/status", 1);
   ros::NodeHandle pn("~");
 }
 
@@ -39,7 +41,7 @@ void Control::dataPublisherThread(void)
   {
     bool image_ok = driver_flir_.get_latest_images(ir_image, rgb_image);
     // Publish image
-    if(image_ok)
+    if (image_ok)
     {
       ros::Time stamp = ros::Time::now();
       cv_bridge::CvImage out_msg;
@@ -52,13 +54,13 @@ void Control::dataPublisherThread(void)
       std_msgs::Header header;
       header.frame_id = "flir";
       header.stamp = stamp;
-      
-      sensor_msgs::ImagePtr msg = cv_bridge::CvImage(header,"rgb8", rgb_image).toImageMsg();
-      msg->encoding = "rgb8" ;
+
+      sensor_msgs::ImagePtr msg = cv_bridge::CvImage(header, "rgb8", rgb_image).toImageMsg();
+      msg->encoding = "rgb8";
       rgb_pub_.publish(msg);
     }
     // This delay slows the loop down for the sake of readability
-    std::this_thread::sleep_for (std::chrono::milliseconds(IMAGE_PUBLISH_THREAD_DELAY_MS));
+    std::this_thread::sleep_for(std::chrono::milliseconds(IMAGE_PUBLISH_THREAD_DELAY_MS));
   }
   std::cout << __func__ << " thread terminated" << std::endl;
 }
@@ -77,14 +79,30 @@ void Control::dataCollectorThread(void)
       driver_flir_.run();
 
       // This delay slows the loop down for the sake of readability
-      std::this_thread::sleep_for (std::chrono::milliseconds(DATA_POLLING_THREAD_DELAY_MS));
+      std::this_thread::sleep_for(std::chrono::milliseconds(DATA_POLLING_THREAD_DELAY_MS));
     }
     driver_flir_.shutdown();
     if (ros::ok())
     {
       ROS_INFO("Retrying...");
     }
-    std::this_thread::sleep_for (std::chrono::milliseconds(3000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+  }
+  std::cout << __func__ << " thread terminated" << std::endl;
+}
+
+void Control::statusPublisherThread(void)
+{
+  std_msgs::Bool state;
+  while (ros::ok())
+  {
+    while (ros::ok() && driver_flir_.ok())
+    {
+      state.data = driver_flir_.status();
+      status_pub_.publish(state);
+      std::this_thread::sleep_for(std::chrono::milliseconds(DATA_POLLING_THREAD_DELAY_MS));
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   }
   std::cout << __func__ << " thread terminated" << std::endl;
 }

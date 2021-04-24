@@ -38,7 +38,7 @@ int main(int argc, char **argv)
   std::shared_ptr<Control> gc(new Control(nh));
   std::thread dataCollectorThread(&Control::dataCollectorThread,gc);
   std::thread dataPublisherThread(&Control::dataPublisherThread,gc);
-
+  std::thread statusPublisherThread(&Control::statusPublisherThread,gc);
   // Handle callbacks
   ros::spin();
 
@@ -46,6 +46,7 @@ int main(int argc, char **argv)
   ros::shutdown();
   dataCollectorThread.join();
   dataPublisherThread.join();
+  statusPublisherThread.join();
 
   return 0;
 }

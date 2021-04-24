@@ -1,0 +1,9 @@
+<launch>
+    <node name="flir_one_node" pkg="flir_one_node" type="flir_one_node" output="screen">
+    </node>
+
+   <arg name="output_path" default="$(env HOME)/flir_data.bag"/>
+   <node pkg="rosbag" type="record"  name="record" output="screen" args="-o $(arg output_path) /flirone/images/rgb_jpg/compressed /flirone/images/ir_16b/compressedDepth /flirone/ok/status">
+   </node>
+
+</launch>

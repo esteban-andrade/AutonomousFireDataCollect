@@ -34,6 +34,7 @@ namespace driver_flir
     void shutdown();
     bool ok();
     void run();
+    bool status();
 
   private:
     const unsigned char magic_byte_[4] = {0xEF,0xBE,0x00,0x00};

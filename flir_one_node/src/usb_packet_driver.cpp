@@ -2,7 +2,7 @@
 #include "usb_packet_driver.h"
 
 static const int TIME_OUT_TIMER_WAIT = 250;
-static const int TIME_OUT_TIME_CONTROL_TRANSFER = 5;
+static const int TIME_OUT_TIME_CONTROL_TRANSFER = 5;  //5
 static const int TIME_OUT_CONTROL_TRANSFER = 0;
 static const int TIME_OUT_BULK_TRANSFER = 0;
 static const int DEFAULT_LENGTH_PRE_SET = 256;
@@ -463,6 +463,9 @@ namespace usb_packet_driver
     {
       is_ok_ = true;
     }
+  }
+  bool UsbPacketDriver::getStatus(){
+    return is_ok_;
   }
 };
 //https://www.freebsd.org/cgi/man.cgi?query=libusb_bulk_transfer&apropos=0&sektion=3&manpath=FreeBSD+11-current&format=html

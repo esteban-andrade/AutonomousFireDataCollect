@@ -47,6 +47,8 @@ namespace usb_packet_driver
     void usb_setup(const unsigned char * magic_byte);
     void shutdown(void);
 
+    bool getStatus();
+
     bool ok();
 
   private:
