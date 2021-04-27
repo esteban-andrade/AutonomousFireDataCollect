@@ -200,7 +200,7 @@ class SerialHandler:
         if (number_of_bytes == 0) or (number_of_bytes < -1):
             return None
 
-        i: int = 0
+        i = 0
         # Iterating over deque can cause problems since deque is not fully thread-safe
         # Use a loop and access elements by index to omit that concurrency problem
         while i < len(self.__deque_data):
