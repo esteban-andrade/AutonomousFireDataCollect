@@ -40,13 +40,13 @@ def getSerialPort():
     return valid_serial_port
 
 def main():
+    print("Press R to start recording or Q to quit...")
     while True:
         is_recording = False
         # Wait for R to be pressed
-        print("Press R to start recording or Q to quit...")
-        key = readkey.readkey()
+        key = readkey.readkey(blocking = False)
         if key == 'r':
-            print("Recording...")
+            print("Initialising Recording...")
             is_recording = True
         if key == 'q':
             break
@@ -80,19 +80,21 @@ def main():
                         device.send_string("1")
                     except SerialException as e:
                         print(f"Error initialising data collection {e}")
+                print("Recording...")
                 while (is_recording):
                     # Wait for S to be pressed
-                    key = readkey.readkey()
+                    key = readkey.readkey(blocking = False)
+                    time.sleep(0.1)
                     if key == 's':
-                        time.sleep(READ_DELAY_SECONDS)
                         is_recording = False
                         if device:
-                            if device:
-                                try:
-                                    device.send_string("0")
-                                except SerialException as e:
-                                    print(f"Error stopping data collection {e}")
+                            try:
+                                device.send_string("0")
+                                time.sleep(READ_DELAY_SECONDS)
+                            except SerialException as e:
+                                print(f"Error stopping data collection {e}")
                             del device
+                print("Press R to start recording or Q to quit...")
 
 
 if __name__ == '__main__':
