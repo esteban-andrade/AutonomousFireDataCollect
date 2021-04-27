@@ -62,12 +62,16 @@ void setup() {
 
 void loop() {
   if (Serial.available()) {
-    char ledState = Serial.read();
-    if (ledState == '0') {
+    char incomingChar = Serial.read();
+    // Check for call and response
+    if (incomingChar == 'J') {
+      Serial.print('I');
+    }
+    if (incomingChar == '0') {
       sendData = false;
       digitalWrite(LED_BUILTIN, LOW);
     }
-    if (ledState == '1') {
+    if (incomingChar == '1') {
       sendData = true;
       Serial.println("MQ2-Gas,Temp,Pressure,Humidity,BME680-Gas,PM1.0,PM2.5,PM10,PC0.5,PC1.0,PC2.5,PC5,PC7.5,PC10");
       digitalWrite(LED_BUILTIN, HIGH);
