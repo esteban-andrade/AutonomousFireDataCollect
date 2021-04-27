@@ -9,7 +9,7 @@ from serial import Serial, SerialException
 
 class SerialHandler:
     def __init__(self, buffer_size: int = 100000):
-        self.__serial: Serial = None
+        self.__serial = None
         self.__deque_data = deque(maxlen=buffer_size)
         self.__deque_log = deque(maxlen=buffer_size)
         self.__serial_reading_thread: threading.Thread = None
