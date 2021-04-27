@@ -56,17 +56,17 @@ def main():
             try:
                 port = getSerialPort()
             except Exception as e:
-                print(f"FATAL ERROR {e}")
+                print("FATAL ERROR {0}".format(e))
                 sys.exit(-1)
             valid = True
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
             if port is not None:
                 try:
-                    print(f"Connecting to device on {port} at baud: {BAUD_RATE}")
+                    print("Connecting to device on {0} at baud: {1}".format(port, BAUD_RATE))
                     device = SerialHandler()
-                    device.start(port, BAUD_RATE, timeout_seconds = 1, log_filename = f"{timestamp} SENSOR DATA", log_extension = "csv", log_show_timestamp = True)
+                    device.start(port, BAUD_RATE, timeout_seconds = 1, log_filename = "{0} SENSOR DATA".format(timestamp), log_extension = "csv", log_show_timestamp = True)
                 except SerialException as e:
-                    print(f"CONNECTION ERROR {e}")
+                    print("CONNECTION ERROR {0}".format(e))
                     port = None
                     valid = False
                     if device:
@@ -79,7 +79,7 @@ def main():
                     try:
                         device.send_string("1")
                     except SerialException as e:
-                        print(f"Error initialising data collection {e}")
+                        print("Error initialising data collection {0}".format(e))
                 print("Recording...")
                 while (is_recording):
                     # Wait for S to be pressed
@@ -92,7 +92,7 @@ def main():
                                 device.send_string("0")
                                 time.sleep(READ_DELAY_SECONDS)
                             except SerialException as e:
-                                print(f"Error stopping data collection {e}")
+                                print("Error stopping data collection {0}".format(e))
                             del device
                 print("Press R to start recording or Q to quit...")
 
