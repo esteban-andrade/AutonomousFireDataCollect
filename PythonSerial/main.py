@@ -40,11 +40,14 @@ def getSerialPort():
     return valid_serial_port
 
 def main():
+    blocking_readkey = True
+    if sys.platform in ('win32', 'cygwin'):
+        blocking_readkey = False
     print("Press R to start recording or Q to quit...")
     while True:
         is_recording = False
         # Wait for R to be pressed
-        key = readkey.readkey(blocking = False)
+        key = readkey.readkey(blocking = blocking_readkey)
         if key == 'r':
             print("Initialising Recording...")
             is_recording = True
@@ -64,7 +67,7 @@ def main():
                 try:
                     print("Connecting to device on {0} at baud: {1}".format(port, BAUD_RATE))
                     device = SerialHandler()
-                    device.start(port, BAUD_RATE, timeout_seconds = 1, log_filename = "{0} SENSOR DATA".format(timestamp), log_extension = "csv", log_show_timestamp = True)
+                    device.start(port, BAUD_RATE, timeout_seconds = 1, log_filename = "log/{0} SENSOR DATA".format(timestamp), log_extension = "csv", log_show_timestamp = True)
                 except SerialException as e:
                     print("CONNECTION ERROR {0}".format(e))
                     port = None
@@ -83,7 +86,7 @@ def main():
                 print("Recording...")
                 while (is_recording):
                     # Wait for S to be pressed
-                    key = readkey.readkey(blocking = False)
+                    key = readkey.readkey(blocking = blocking_readkey)
                     time.sleep(0.1)
                     if key == 's':
                         is_recording = False
