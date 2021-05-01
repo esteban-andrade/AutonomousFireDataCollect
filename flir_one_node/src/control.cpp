@@ -96,7 +96,7 @@ void Control::statusPublisherThread(void)
   std_msgs::Bool state;
   while (ros::ok())
   {
-    while (ros::ok() && driver_flir_.ok())
+    //while (ros::ok() && driver_flir_.ok())
     {
       state.data = driver_flir_.status();
       status_pub_.publish(state);

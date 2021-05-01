@@ -1,7 +1,7 @@
 #include <boost/format.hpp>
 #include "usb_packet_driver.h"
 
-static const int TIME_OUT_TIMER_WAIT = 250;
+static const int TIME_OUT_TIMER_WAIT = 250; //250
 static const int TIME_OUT_TIME_CONTROL_TRANSFER = 5;  //5
 static const int TIME_OUT_CONTROL_TRANSFER = 0;
 static const int TIME_OUT_BULK_TRANSFER = 0;
