@@ -36,18 +36,18 @@ int main(int argc, char **argv)
 
   // Start the threads contained in the control class
   std::shared_ptr<Control> gc(new Control(nh));
-  // std::thread dataCollectorThread(&Control::dataCollectorThread,gc);
-  // std::thread dataPublisherThread(&Control::dataPublisherThread,gc);
-  // std::thread statusPublisherThread(&Control::statusPublisherThread,gc);
+  std::thread dataCollectorThread(&Control::dataCollectorThread,gc);
+  std::thread dataPublisherThread(&Control::dataPublisherThread,gc);
+  std::thread statusPublisherThread(&Control::statusPublisherThread,gc);
   std::thread sensorsPublisherThread(&Control::sensorsDataPublisherThread, gc);
   // Handle callbacks
   ros::spin();
 
   // Clean up everything, shutdown ROS and rejoin the thread
   ros::shutdown();
-  // dataCollectorThread.join();
-  // dataPublisherThread.join();
-  // statusPublisherThread.join();
+  dataCollectorThread.join();
+  dataPublisherThread.join();
+  statusPublisherThread.join();
   sensorsPublisherThread.join();
   
   return 0;

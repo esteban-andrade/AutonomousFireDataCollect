@@ -225,7 +225,7 @@ void Control::sensorsDataPublisherThread(void)
     // std::cout<<data<<std::endl;
     sensors_data.data = read_buf;
     sensors_pub_.publish(sensors_data);
-  
+    std::this_thread::sleep_for(std::chrono::milliseconds(DATA_POLLING_THREAD_DELAY_MS));
   }
     write(serial_port, "0", sizeof(msg));
     close(serial_port);
