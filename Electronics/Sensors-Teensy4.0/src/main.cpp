@@ -27,6 +27,8 @@ TinyGPSPlus gps;
 // The serial connection to the GPS device
 SoftwareSerial ss(RXPin, TXPin);
 
+String datapayload;
+
 void setup() {
   // Initialise Serial
   Serial.begin(115200);
@@ -83,7 +85,7 @@ void loop() {
     if (sendData) {
       int sensorValue = analogRead(A0);
       //Serial.print("MQ2-Gas: ");
-      Serial.print(sensorValue);
+      // Serial.print(sensorValue);
 
       ///////////////////////////////////////////////////////////////////////
 
@@ -98,76 +100,79 @@ void loop() {
         Serial.println(F("Failed to complete reading :("));
         return;
       }
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print(F("Temperature = "));
-      Serial.print(bme.temperature);
+      // Serial.print(bme.temperature);
       //Serial.println(F("°C"));
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print(F("Pressure = "));
-      Serial.print(bme.pressure / 100.0);
+      // Serial.print(bme.pressure / 100.0);
       //Serial.println(F("hPa"));
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print(F("Humidity = "));
-      Serial.print(bme.humidity);
+      // Serial.print(bme.humidity);
       //Serial.println(F("%"));
 
       //Serial.print(F("Approx. Altitude = "));
       //Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
       //Serial.println(F("m"));
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print(F("Gas = "));
-      Serial.print(bme.gas_resistance / 1000.0);
+      // Serial.print(bme.gas_resistance / 1000.0);
       //Serial.println(F("KΩ"));
 
       //////////////////////////////////////////////////////////////////////////////
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PM1.0: ");
       float pm1_0 = myAirSensor.getPM1_0();
-      Serial.print(pm1_0, 3); //Print float with 2 decimals
+      // Serial.print(pm1_0, 3); //Print float with 2 decimals
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PM2.5: ");
       float pm2_5 = myAirSensor.getPM2_5();
-      Serial.print(pm2_5, 3);
+      // Serial.print(pm2_5, 3);
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PM10: ");
       float pm10 = myAirSensor.getPM10();
-      Serial.print(pm10, 3);
+      // Serial.print(pm10, 3);
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PC0.5: ");
       unsigned int pc0_5 = myAirSensor.getPC0_5();
-      Serial.print(pc0_5);
+      // Serial.print(pc0_5);
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PC1.0: ");
       unsigned int pc1_0 = myAirSensor.getPC1_0();
-      Serial.print(pc1_0);
+      // Serial.print(pc1_0);
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PC2.5: ");
       unsigned int pc2_5 = myAirSensor.getPC2_5();
-      Serial.print(pc2_5);
+      // Serial.print(pc2_5);
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PC5.0: ");
       unsigned int pc5_0 = myAirSensor.getPC5_0();
-      Serial.print(pc5_0);
+      // Serial.print(pc5_0);
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PC7.5: ");
       unsigned int pc7_5 = myAirSensor.getPC7_5();
-      Serial.print(pc7_5);
+      // Serial.print(pc7_5);
 
-      Serial.print(",");
+      // Serial.print(",");
       //Serial.print("PC10: ");
       unsigned int pc10 = myAirSensor.getPC10();
-      Serial.print(pc10);
+      // Serial.print(pc10);
+
+      datapayload = (sensorValue,bme.temperature,(bme.pressure / 100.0),bme.humidity,(bme.gas_resistance / 1000.0),(pm1_0, 3),(pm2_5, 3),(pm10, 3),pc0_5,pc1_0,pc2_5,pc5_0,pc7_5,pc10);
+      Serial.println(datapayload);
 
 
       ////////////////////////////////////////////////////////////////////////////
@@ -220,7 +225,7 @@ void loop() {
       //  }
       /////////////////////////////////////////////////////////////////////////////
 
-      Serial.println();
+      // Serial.println();
     }
   }
 }
