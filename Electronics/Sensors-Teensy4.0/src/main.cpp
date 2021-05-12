@@ -2,8 +2,6 @@
 
 #include <Wire.h>
 #include <SPI.h>
-#include <TinyGPS++.h>
-#include <SoftwareSerial.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME680.h>
 
@@ -14,31 +12,24 @@ SFE_PARTICLE_SENSOR myAirSensor;
 
 Adafruit_BME680 bme; // I2C
 
-static const int RXPin = 0, TXPin = 1;
-static const uint32_t GPSBaud = 9600;
-
 unsigned long previousMillis = 0;
 const long delayInterval = 1000;
 bool sendData = false;
 
-// The TinyGPS++ object
-TinyGPSPlus gps;
-
-// The serial connection to the GPS device
-SoftwareSerial ss(RXPin, TXPin);
-
 String datapayload;
 
-void setup() {
+void setup()
+{
   // Initialise Serial
   Serial.begin(115200);
-  ss.begin(GPSBaud);
 
   Wire.begin();
 
-  if (!bme.begin()) {
+  if (!bme.begin())
+  {
     Serial.println(F("Could not find a valid BME680 sensor, check wiring!"));
-    while (1);
+    while (1)
+      ;
   }
 
   if (myAirSensor.begin() == false)
@@ -59,30 +50,36 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
 
   delay(5000);
-
 }
 
-void loop() {
-  if (Serial.available()) {
+void loop()
+{
+  if (Serial.available())
+  {
     char incomingChar = Serial.read();
     // Check for call and response
-    if (incomingChar == 'J') {
+    if (incomingChar == 'J')
+    {
       Serial.print('I');
     }
-    if (incomingChar == '0') {
+    if (incomingChar == '0')
+    {
       sendData = false;
       digitalWrite(LED_BUILTIN, LOW);
     }
-    if (incomingChar == '1') {
+    if (incomingChar == '1')
+    {
       sendData = true;
       Serial.println("MQ2-Gas,Temp,Pressure,Humidity,BME680-Gas,PM1.0,PM2.5,PM10,PC0.5,PC1.0,PC2.5,PC5,PC7.5,PC10");
       digitalWrite(LED_BUILTIN, HIGH);
     }
   }
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= delayInterval) {
+  if (currentMillis - previousMillis >= delayInterval)
+  {
     previousMillis = currentMillis;
-    if (sendData) {
+    if (sendData)
+    {
       int sensorValue = analogRead(A0);
       //Serial.print("MQ2-Gas: ");
       // Serial.print(sensorValue);
@@ -91,12 +88,14 @@ void loop() {
 
       // Tell BME680 to begin measurement.
       unsigned long endTime = bme.beginReading();
-      if (endTime == 0) {
+      if (endTime == 0)
+      {
         Serial.println(F("Failed to begin reading :("));
         return;
       }
 
-      if (!bme.endReading()) {
+      if (!bme.endReading())
+      {
         Serial.println(F("Failed to complete reading :("));
         return;
       }
@@ -171,64 +170,11 @@ void loop() {
       unsigned int pc10 = myAirSensor.getPC10();
       // Serial.print(pc10);
 
-      datapayload = (sensorValue,bme.temperature,(bme.pressure / 100.0),bme.humidity,(bme.gas_resistance / 1000.0),(pm1_0, 3),(pm2_5, 3),(pm10, 3),pc0_5,pc1_0,pc2_5,pc5_0,pc7_5,pc10);
+      datapayload = (sensorValue, bme.temperature, (bme.pressure / 100.0), bme.humidity, (bme.gas_resistance / 1000.0), (pm1_0, 3), (pm2_5, 3), (pm10, 3), pc0_5, pc1_0, pc2_5, pc5_0, pc7_5, pc10);
       Serial.println(datapayload);
 
-
-      ////////////////////////////////////////////////////////////////////////////
-
-      // This sketch displays information every time a new sentence is correctly encoded.
-      //  while (ss.available() > 0)
-      //    if (gps.encode(ss.read()))
-      //    {
-      //
-      //      if (gps.location.isValid() || gps.date.isValid() || gps.time.isValid() || gps.altitude.isValid() || gps.satellites.isValid())
-      //      {
-      //        Serial.print("Lat: ");
-      //        Serial.println(gps.location.lat(), 6);
-      //        Serial.print("Log: ");
-      //        Serial.println(gps.location.lng(), 6);
-      //        Serial.print(F("Date: "));
-      //        Serial.print(gps.date.month());
-      //        Serial.print(F("/"));
-      //        Serial.print(gps.date.day());
-      //        Serial.print(F("/"));
-      //        Serial.println(gps.date.year());
-      //        Serial.print("Time: ");
-      //        if (gps.time.hour() < 10) Serial.print(F("0"));
-      //        Serial.print(gps.time.hour());
-      //        Serial.print(F(":"));
-      //        if (gps.time.minute() < 10) Serial.print(F("0"));
-      //        Serial.print(gps.time.minute());
-      //        Serial.print(F(":"));
-      //        if (gps.time.second() < 10) Serial.print(F("0"));
-      //        Serial.println(gps.time.second());
-      //        Serial.print("Alt: ");
-      //        Serial.print(gps.altitude.meters());
-      //        Serial.println(F("m"));
-      //        Serial.print("Sats: ");
-      //        Serial.print(gps.satellites.value());
-      //      }
-      //
-      //      else
-      //      {
-      //        Serial.print(F("INVALID"));
-      //      }
-      //
-      //      Serial.println();
-      //    }
-
-      //  if (millis() > 5000 && gps.charsProcessed() < 10)
-      //  {
-      //    Serial.println(F("No GPS detected: check wiring."));
-      //    while (true);
-      //  }
-      /////////////////////////////////////////////////////////////////////////////
-
-      // Serial.println();
     }
   }
 }
-
 
 // END OF CODE
