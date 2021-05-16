@@ -169,10 +169,25 @@ void loop()
       //Serial.print("PC10: ");
       unsigned int pc10 = myAirSensor.getPC10();
       // Serial.print(pc10);
+      String sensor_value = sensorValue;
+      String bme_temp = bme.temperature;
+      String bme_press = (bme.pressure / 100.0);
+      String bme_gass = (bme.gas_resistance / 1000.0);
+      String bme_hum = bme.humidity;
+      String pm1 = pm1_0;
+      String pm2 = pm2_5;
+      String pm10_ = pm10;
+      String pc0_5_ = pc0_5;
+      String pc1_0_ = pc1_0;
+      String pc2_5_ = pc2_5;
+      String pc5_0_ = pc5_0;
+      String pc7_5_ = pc7_5;
+      String pc10_ = pc10;
 
-      datapayload = (sensorValue, bme.temperature, (bme.pressure / 100.0), bme.humidity, (bme.gas_resistance / 1000.0), (pm1_0, 3), (pm2_5, 3), (pm10, 3), pc0_5, pc1_0, pc2_5, pc5_0, pc7_5, pc10);
+      // datapayload = (sensorValue, bme.temperature, (bme.pressure / 100.0), bme.humidity, (bme.gas_resistance / 1000.0),
+      //                (pm1_0, 3), (pm2_5, 3), (pm10, 3), pc0_5, pc1_0, pc2_5, pc5_0, pc7_5, pc10);
+      datapayload = sensor_value + ";" + bme_temp + ";" + bme_press + ";" + bme_hum + ";" + bme_gass + ";" + pm1 + ";" + pm2 + ";" + pm10_ + ";" + pc0_5_ + ";" + pc1_0_ + ";" + pc2_5_ + ";" + pc5_0_ + ";" + pc7_5_ + ";" + pc10_;
       Serial.println(datapayload);
-
     }
   }
 }
