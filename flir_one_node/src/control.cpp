@@ -223,7 +223,17 @@ void Control::sensorsDataPublisherThread(void)
     // sensors_data.data = std::string(data);
     // //sensors_pub_.publish(sensors_data);
     // std::cout<<data<<std::endl;
-    sensors_data.data = read_buf;
+    const std::string input =read_buf;
+    std::string output;
+    output.reserve(input.length());
+
+    std::copy_if(input.begin(), input.end(),
+                 std::back_inserter(output),
+                 [](char c)
+                 { return c != '\r' && c != '\n'; });
+
+    sensors_data.data = output;
+
     sensors_pub_.publish(sensors_data);
     std::this_thread::sleep_for(std::chrono::milliseconds(DATA_POLLING_THREAD_DELAY_MS));
   }
