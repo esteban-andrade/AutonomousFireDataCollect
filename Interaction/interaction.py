@@ -11,7 +11,7 @@ def main():
     visual = 'roslaunch flir_one_node flir_data_vis.launch'
     record = 'roslaunch flir_one_node flir_data_record.launch'
 
-############## Starts Visualizer to Set Record Change to vis to record ######
+############## Starts process######
     proc = subprocess.Popen(
         [record], stdout=subprocess.PIPE,
         shell=True, preexec_fn=os.setsid)
