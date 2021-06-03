@@ -47,8 +47,9 @@ Ensuring the camera is connected and powered on, run the ROS package
 ```
 rosrun flir_one_node flir_one_node
 ```
+## Launch Files
 
-Alternatively there are a series of launch files that can be used to start the rosnode.
+Alternatively there are a series of launch files that can be used to start the rosnode. These will allow a simpler approach when executing the ROS nodes= for different purposes such as Visualization or Data Recording
 
 ### For Visualization 
 
