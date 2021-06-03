@@ -10,6 +10,8 @@ Currently, emergency services have limited methods to collect data to detect or 
 
 <img src="https://i.ibb.co/n8CS2R5/amp.jpg" width="400">
 
+* The 
+
 
 Code to hold the data collection from different sensors for bush fire tracking&amp;prevention 
 Here we will find the content for the thermal as well as the electronic firmware for electronics interface.
