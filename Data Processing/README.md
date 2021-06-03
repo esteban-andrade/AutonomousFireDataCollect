@@ -8,7 +8,7 @@ This script was prepared using MATLAB R2021a. No specialised toolboxes are requi
 
 ## Purpose and Overview
 
-The purspose of this program is to take a descrete time-based dataset in a `.csv` format and visualise that data against a video in realtime. An example output can be found [here](data_plot_example.avi).
+The purspose of this program is to take a descrete time-based dataset in a `.csv` format and visualise that data against a video in realtime.
 
 ## Usage Instructions
 
