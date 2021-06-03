@@ -67,7 +67,7 @@ roslaunch flir_one_node flir_data_vis.launch
 ```
 
 
-The image can be viewed using RQT (or similar) on the following topics:
+The data can be viewed using RQT (or similar) on the following topics:
 
 ```
 /camera_flir_node/rgb/image_raw
@@ -76,6 +76,9 @@ The image can be viewed using RQT (or similar) on the following topics:
 /flirone/ok/status 
 /sensors/data
 ```
+
+If the Visualization Launch file is triggered it will use RQT as default for image visualization
+
 
 ## SensorData
 
