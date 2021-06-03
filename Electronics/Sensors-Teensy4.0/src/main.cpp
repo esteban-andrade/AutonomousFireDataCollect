@@ -18,6 +18,19 @@ bool sendData = false;
 
 String datapayload;
 
+#include <FastLED.h>
+#define LED_PIN 2
+#define NUM_LEDS 4
+CRGB leds[NUM_LEDS];
+
+int startBtn = 3; //Start button
+int stopBtn = 4;  //Stop button
+int Start = LOW;
+int Stop = LOW;
+
+long lastDebounceTime = 0; // the last time the output pin was toggled
+long debounceDelay = 100;  // the debounce time; increase if the output flickers
+
 void setup()
 {
   // Initialise Serial
@@ -49,145 +62,216 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
-  delay(5000);
+  FastLED.addLeds<WS2812, LED_PIN, GRB>(leds, NUM_LEDS);
+  pinMode(startBtn, INPUT);
+  pinMode(stopBtn, INPUT);
+
+  for (int i = 0; i < 4; i++)
+  {
+    leds[i] = CRGB(0, 255, 255); // RED
+    FastLED.show();
+    delay(100);
+  }
+
+  for (int i = 0; i < 4; i++)
+  {
+    leds[i] = CRGB(175, 220, 255); // Orange
+    FastLED.show();
+    delay(100);
+  }
+
+  for (int i = 0; i < 4; i++)
+  {
+    leds[i] = CRGB(255, 0, 255); // Green
+    FastLED.show();
+    delay(100);
+  }
+
+  for (int i = 0; i < 4; i++)
+  {
+    leds[i] = CRGB(255, 255, 255); // OFF
+    FastLED.show();
+    delay(50);
+  }
+
+  leds[0] = CRGB(0, 255, 255); // System Status
+  leds[1] = CRGB(108, 0, 255); // Status
+  leds[2] = CRGB(255, 255, 0); // GPS Status
+  leds[3] = CRGB(0, 255, 255); // Spare
+  FastLED.show();
+  delay(1000);
+  leds[0] = CRGB(255, 0, 255); // System Status
+
+  leds[1] = CRGB(255, 0, 255); // Status
+  FastLED.show();
 }
 
 void loop()
 {
-  if (Serial.available())
+
+  Start = digitalRead(startBtn);
+  Stop = digitalRead(stopBtn);
+
+  //filter out any noise by setting a time buffer
+  if ((millis() - lastDebounceTime) > debounceDelay)
   {
-    char incomingChar = Serial.read();
-    // Check for call and response
-    if (incomingChar == 'J')
-    {
-      Serial.print('I');
-    }
-    if (incomingChar == '0')
-    {
-      sendData = false;
-      digitalWrite(LED_BUILTIN, LOW);
-    }
-    if (incomingChar == '1')
-    {
-      sendData = true;
-      Serial.println("MQ2-Gas,Temp,Pressure,Humidity,BME680-Gas,PM1.0,PM2.5,PM10,PC0.5,PC1.0,PC2.5,PC5,PC7.5,PC10");
-      digitalWrite(LED_BUILTIN, HIGH);
-    }
-  }
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= delayInterval)
-  {
-    previousMillis = currentMillis;
-    if (sendData)
-    {
-      int sensorValue = analogRead(A0);
-      //Serial.print("MQ2-Gas: ");
-      // Serial.print(sensorValue);
 
-      ///////////////////////////////////////////////////////////////////////
+    // Start pressed
+    if (Start == HIGH && Stop == LOW)
+    {
+      leds[1] = CRGB(175, 220, 255); // Red
+      FastLED.show();
+      Serial.write(true);
+      lastDebounceTime = millis(); //set the current time
 
-      // Tell BME680 to begin measurement.
-      unsigned long endTime = bme.beginReading();
-      if (endTime == 0)
+      if (Serial.available())
       {
-        Serial.println(F("Failed to begin reading :("));
-        return;
+        char incomingChar = Serial.read();
+        // Check for call and response
+        if (incomingChar == 'J')
+        {
+          Serial.print('I');
+        }
+        if (incomingChar == '0')
+        {
+          sendData = false;
+          digitalWrite(LED_BUILTIN, LOW);
+        }
+        if (incomingChar == '1')
+        {
+          sendData = true;
+          Serial.println("MQ2-Gas,Temp,Pressure,Humidity,BME680-Gas,PM1.0,PM2.5,PM10,PC0.5,PC1.0,PC2.5,PC5,PC7.5,PC10");
+          digitalWrite(LED_BUILTIN, HIGH);
+        }
       }
-
-      if (!bme.endReading())
+      unsigned long currentMillis = millis();
+      if (currentMillis - previousMillis >= delayInterval)
       {
-        Serial.println(F("Failed to complete reading :("));
-        return;
+        previousMillis = currentMillis;
+        if (sendData)
+        {
+          int sensorValue = analogRead(A0);
+          //Serial.print("MQ2-Gas: ");
+          // Serial.print(sensorValue);
+
+          ///////////////////////////////////////////////////////////////////////
+
+          // Tell BME680 to begin measurement.
+          unsigned long endTime = bme.beginReading();
+          if (endTime == 0)
+          {
+            Serial.println(F("Failed to begin reading :("));
+            return;
+          }
+
+          if (!bme.endReading())
+          {
+            Serial.println(F("Failed to complete reading :("));
+            return;
+          }
+          // Serial.print(",");
+          //Serial.print(F("Temperature = "));
+          // Serial.print(bme.temperature);
+          //Serial.println(F("°C"));
+
+          // Serial.print(",");
+          //Serial.print(F("Pressure = "));
+          // Serial.print(bme.pressure / 100.0);
+          //Serial.println(F("hPa"));
+
+          // Serial.print(",");
+          //Serial.print(F("Humidity = "));
+          // Serial.print(bme.humidity);
+          //Serial.println(F("%"));
+
+          //Serial.print(F("Approx. Altitude = "));
+          //Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
+          //Serial.println(F("m"));
+
+          // Serial.print(",");
+          //Serial.print(F("Gas = "));
+          // Serial.print(bme.gas_resistance / 1000.0);
+          //Serial.println(F("KΩ"));
+
+          //////////////////////////////////////////////////////////////////////////////
+
+          // Serial.print(",");
+          //Serial.print("PM1.0: ");
+          float pm1_0 = myAirSensor.getPM1_0();
+          // Serial.print(pm1_0, 3); //Print float with 2 decimals
+
+          // Serial.print(",");
+          //Serial.print("PM2.5: ");
+          float pm2_5 = myAirSensor.getPM2_5();
+          // Serial.print(pm2_5, 3);
+
+          // Serial.print(",");
+          //Serial.print("PM10: ");
+          float pm10 = myAirSensor.getPM10();
+          // Serial.print(pm10, 3);
+
+          // Serial.print(",");
+          //Serial.print("PC0.5: ");
+          unsigned int pc0_5 = myAirSensor.getPC0_5();
+          // Serial.print(pc0_5);
+
+          // Serial.print(",");
+          //Serial.print("PC1.0: ");
+          unsigned int pc1_0 = myAirSensor.getPC1_0();
+          // Serial.print(pc1_0);
+
+          // Serial.print(",");
+          //Serial.print("PC2.5: ");
+          unsigned int pc2_5 = myAirSensor.getPC2_5();
+          // Serial.print(pc2_5);
+
+          // Serial.print(",");
+          //Serial.print("PC5.0: ");
+          unsigned int pc5_0 = myAirSensor.getPC5_0();
+          // Serial.print(pc5_0);
+
+          // Serial.print(",");
+          //Serial.print("PC7.5: ");
+          unsigned int pc7_5 = myAirSensor.getPC7_5();
+          // Serial.print(pc7_5);
+
+          // Serial.print(",");
+          //Serial.print("PC10: ");
+          unsigned int pc10 = myAirSensor.getPC10();
+          // Serial.print(pc10);
+          String sensor_value = sensorValue;
+          String bme_temp = bme.temperature;
+          String bme_press = (bme.pressure / 100.0);
+          String bme_gass = (bme.gas_resistance / 1000.0);
+          String bme_hum = bme.humidity;
+          String pm1 = pm1_0;
+          String pm2 = pm2_5;
+          String pm10_ = pm10;
+          String pc0_5_ = pc0_5;
+          String pc1_0_ = pc1_0;
+          String pc2_5_ = pc2_5;
+          String pc5_0_ = pc5_0;
+          String pc7_5_ = pc7_5;
+          String pc10_ = pc10;
+
+          // datapayload = (sensorValue, bme.temperature, (bme.pressure / 100.0), bme.humidity, (bme.gas_resistance / 1000.0),
+          //                (pm1_0, 3), (pm2_5, 3), (pm10, 3), pc0_5, pc1_0, pc2_5, pc5_0, pc7_5, pc10);
+          datapayload = sensor_value + ";" + bme_temp + ";" + bme_press + ";" + bme_hum + ";" + bme_gass + ";" + pm1 + ";" + pm2 + ";" + pm10_ + ";" + pc0_5_ + ";" + pc1_0_ + ";" + pc2_5_ + ";" + pc5_0_ + ";" + pc7_5_ + ";" + pc10_;
+          Serial.println(datapayload);
+        }
       }
-      // Serial.print(",");
-      //Serial.print(F("Temperature = "));
-      // Serial.print(bme.temperature);
-      //Serial.println(F("°C"));
+    }
 
-      // Serial.print(",");
-      //Serial.print(F("Pressure = "));
-      // Serial.print(bme.pressure / 100.0);
-      //Serial.println(F("hPa"));
-
-      // Serial.print(",");
-      //Serial.print(F("Humidity = "));
-      // Serial.print(bme.humidity);
-      //Serial.println(F("%"));
-
-      //Serial.print(F("Approx. Altitude = "));
-      //Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
-      //Serial.println(F("m"));
-
-      // Serial.print(",");
-      //Serial.print(F("Gas = "));
-      // Serial.print(bme.gas_resistance / 1000.0);
-      //Serial.println(F("KΩ"));
-
-      //////////////////////////////////////////////////////////////////////////////
-
-      // Serial.print(",");
-      //Serial.print("PM1.0: ");
-      float pm1_0 = myAirSensor.getPM1_0();
-      // Serial.print(pm1_0, 3); //Print float with 2 decimals
-
-      // Serial.print(",");
-      //Serial.print("PM2.5: ");
-      float pm2_5 = myAirSensor.getPM2_5();
-      // Serial.print(pm2_5, 3);
-
-      // Serial.print(",");
-      //Serial.print("PM10: ");
-      float pm10 = myAirSensor.getPM10();
-      // Serial.print(pm10, 3);
-
-      // Serial.print(",");
-      //Serial.print("PC0.5: ");
-      unsigned int pc0_5 = myAirSensor.getPC0_5();
-      // Serial.print(pc0_5);
-
-      // Serial.print(",");
-      //Serial.print("PC1.0: ");
-      unsigned int pc1_0 = myAirSensor.getPC1_0();
-      // Serial.print(pc1_0);
-
-      // Serial.print(",");
-      //Serial.print("PC2.5: ");
-      unsigned int pc2_5 = myAirSensor.getPC2_5();
-      // Serial.print(pc2_5);
-
-      // Serial.print(",");
-      //Serial.print("PC5.0: ");
-      unsigned int pc5_0 = myAirSensor.getPC5_0();
-      // Serial.print(pc5_0);
-
-      // Serial.print(",");
-      //Serial.print("PC7.5: ");
-      unsigned int pc7_5 = myAirSensor.getPC7_5();
-      // Serial.print(pc7_5);
-
-      // Serial.print(",");
-      //Serial.print("PC10: ");
-      unsigned int pc10 = myAirSensor.getPC10();
-      // Serial.print(pc10);
-      String sensor_value = sensorValue;
-      String bme_temp = bme.temperature;
-      String bme_press = (bme.pressure / 100.0);
-      String bme_gass = (bme.gas_resistance / 1000.0);
-      String bme_hum = bme.humidity;
-      String pm1 = pm1_0;
-      String pm2 = pm2_5;
-      String pm10_ = pm10;
-      String pc0_5_ = pc0_5;
-      String pc1_0_ = pc1_0;
-      String pc2_5_ = pc2_5;
-      String pc5_0_ = pc5_0;
-      String pc7_5_ = pc7_5;
-      String pc10_ = pc10;
-
-      // datapayload = (sensorValue, bme.temperature, (bme.pressure / 100.0), bme.humidity, (bme.gas_resistance / 1000.0),
-      //                (pm1_0, 3), (pm2_5, 3), (pm10, 3), pc0_5, pc1_0, pc2_5, pc5_0, pc7_5, pc10);
-      datapayload = sensor_value + ";" + bme_temp + ";" + bme_press + ";" + bme_hum + ";" + bme_gass + ";" + pm1 + ";" + pm2 + ";" + pm10_ + ";" + pc0_5_ + ";" + pc1_0_ + ";" + pc2_5_ + ";" + pc5_0_ + ";" + pc7_5_ + ";" + pc10_;
-      Serial.println(datapayload);
+    // Stop pressed
+    if (Start == LOW && Stop == HIGH)
+    {
+      leds[1] = CRGB(0, 255, 255); // Green
+      FastLED.show();
+      delay(1000);
+      leds[1] = CRGB(255, 0, 255); // Green
+      FastLED.show();
+      Serial.write(false);
+      lastDebounceTime = millis(); //set the current time
     }
   }
 }
