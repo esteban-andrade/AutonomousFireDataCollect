@@ -28,7 +28,7 @@ Restart the system
 
 Ensure that this git repository is contained within the `src` folder of the `catkin_ws` directory.
 
-Run `catkin_make` from within the `catkin_ws` directory.
+Run `catkin_make` from within the `catkin_ws` directory. Otherwise perform a `catkin build`
 
 Ensure the package can be run by executing the following command from the `catkin_ws` directory:
 
@@ -48,10 +48,37 @@ Ensuring the camera is connected and powered on, run the ROS package
 rosrun flir_one_node flir_one_node
 ```
 
+Alternatively there are a series of launch files that can be used to start the rosnode.
+
+### For Visualization 
+
+Type the following command in a terminal. It will styart the node and it will broadcast both RBG and Depth Images
+
+```
+roslaunch flir_one_node flir_data_vis.launch
+```
+
+### For Recording
+ 
+ Type the following command in tyhe terminal to record a ROSBAG of images and sensor data.
+ 
+```
+roslaunch flir_one_node flir_data_vis.launch
+```
+
+
 The image can be viewed using RQT (or similar) on the following topics:
 
 ```
 /camera_flir_node/rgb/image_raw
 /camera_flir_node/ir_8b/image_raw
 /camera_flir_node/ir_16b/image_raw
+/flirone/ok/status 
+/sensors/data
 ```
+
+## SensorData
+
+The sensor data will be parsed using strings. 
+Ensure that the microcontroller is defined as `/dev/ttyACM0`
+The Node will send serial data to the microcontroller when it  is required to start and stop the sensor data acquisition process.
