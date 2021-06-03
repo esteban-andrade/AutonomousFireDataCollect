@@ -5,3 +5,5 @@
 2. ESP8266 - GPS: The ESP8266 module is intended to collect GPS NEMA data and translate that into GPS coordinates for use. The ESP8266 will parse the data and send it over UART to the Teensy 4.0. 
 
 Note: The firmware is written in VSCode using PlatformIOIDE. Please install the required software to modify the code.
+
+Electronic schematic and Altium Designer PCB files inlcuding the BOM can be found here: https://github.com/kyleprr/Autonomous-Perception-Bushfires-Electronics
