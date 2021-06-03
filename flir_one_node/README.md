@@ -49,7 +49,7 @@ rosrun flir_one_node flir_one_node
 ```
 ## Launch Files
 
-Alternatively there are a series of launch files that can be used to start the rosnode. These will allow a simpler approach when executing the ROS nodes= for different purposes such as Visualization or Data Recording
+Alternatively there are a series of launch files that can be used to start the rosnode. These will allow a simpler approach when executing the ROS nodes for different purposes such as Visualization or Data Recording
 
 ### For Visualization 
 
@@ -77,6 +77,7 @@ The data can be viewed using RQT (or similar) on the following topics:
 /flirone/ok/status 
 /sensors/data
 ```
+The `/flirone/ok/status ` will broadcast the status of the connection of the Flir camera with the Intel Nuc. A boolean will be used and if the value is true there are no issues when using camera to record data.
 
 If the Visualization Launch file is triggered it will use RQT as default for image visualization
 
@@ -86,3 +87,6 @@ If the Visualization Launch file is triggered it will use RQT as default for ima
 The sensor data will be parsed using strings. 
 Ensure that the microcontroller is defined as `/dev/ttyACM0`
 The Node will send serial data to the microcontroller when it  is required to start and stop the sensor data acquisition process.
+The topic `/sensors/data` will receive the sensor data from the teensy and it will parse the serial data as string and subsequenly advertised in this ROS topic.
+
+
