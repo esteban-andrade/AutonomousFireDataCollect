@@ -6,4 +6,5 @@
 
 Note: The firmware is written in VSCode using PlatformIOIDE. Please install the required software to modify the code.
 
-Electronic schematic and Altium Designer PCB files inlcuding the BOM can be found here: https://github.com/kyleprr/Autonomous-Perception-Bushfires-Electronics
+Electronic schematic and Altium Designer PCB files inlcuding the BOM can be found here: 
+https://github.com/kyleprr/Autonomous-Perception-Bushfires-Electronics
