@@ -23,3 +23,6 @@ To integrate this open the `start-up` applications option in Ubuntu.
 Add the path to the filed to the generated executable  `integration` to the new option and add a valid name.
 
 Once the system reboots the application will start automatically.
+
+## Extra components
+Similarly under PythonSerial it is possible to user seral pythons scripts to acquire pure sensor data from the teensy and save them to CSV files.
