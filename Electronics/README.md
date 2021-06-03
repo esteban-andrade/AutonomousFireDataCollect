@@ -1,5 +1,4 @@
-# Electronics
-Electronics Code
+# Electronics Firmware
 
 1. Sensors-Teensy4.0: To be loaded onto the Teensy 4.0. The code is subject to change for fixes and improvements. It's main purpose is to collect data from all attached sensors and parse the data over Serial to ROS SERIAL. The device will all the user to start and stop data recording using a user interface panel on board.
 
