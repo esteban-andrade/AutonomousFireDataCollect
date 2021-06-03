@@ -10,7 +10,14 @@ Currently, emergency services have limited methods to collect data to detect or 
 
 <img src="https://i.ibb.co/n8CS2R5/amp.jpg" width="400">
 
+The following folders contain a solution that aids to capture data in order to train som ML models.
+
+The main objective is to capture data using a thermal camera(Flir) along with auxiliary sensors(Temperature,Humidity,Pressure,etc.).
+This will be processed using a corresponding ROS NODE ` flir_one_node` and with the Launch files start the data acquisition process smoothly and store it in a ROSBAG with the timestamp.
+
+All Main components of this project are detailed in the folder below
+
 * The Data Processing folder contains the script required to plot data in MATLAB from a video source and data set.
 * The Electronics folder contains the code and PCB schematic/design files created for the prototype device.
 * The Interaction folder contains the scripts required to accept commands from the Teensy device to the computer to trigger start and stop recording.
-* The flire_one_node folder contains the files required to setup the FLIR ONE camera.
+* The flir_one_node folder contains the files required to setup the FLIR ONE camera.
