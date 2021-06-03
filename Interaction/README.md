@@ -5,9 +5,9 @@ This component describes the integration between the user interface and the syst
 ## Requirements.
 Ensure to navigate to the `test folder` and compile the test  script
 
-`mkdir build
-cd build
-cmake ..
+`mkdir build \
+cd build \
+cmake ..\
 make
 `
 
