@@ -61,7 +61,7 @@ roslaunch flir_one_node flir_data_vis.launch
 
 ### For Recording
  
- Type the following command in tyhe terminal to record a ROSBAG of images and sensor data.
+ Type the following command in tyhe terminal to record a ROSBAG of images and sensor data. The ROSBAG will use the timestamp of when the recording process started.
  
 ```
 roslaunch flir_one_node flir_data_vis.launch
