@@ -121,7 +121,7 @@ void loop()
     {
       leds[1] = CRGB(175, 220, 255); // Red
       FastLED.show();
-      Serial.write("r");
+      Serial.write(true);
       lastDebounceTime = millis(); //set the current time
 
       if (Serial.available())
@@ -270,7 +270,7 @@ void loop()
       delay(1000);
       leds[1] = CRGB(255, 0, 255); // Green
       FastLED.show();
-      Serial.write("s");
+      Serial.write(false);
       lastDebounceTime = millis(); //set the current time
     }
   }
