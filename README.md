@@ -8,7 +8,7 @@ In recent years, there has been an international increase in the number, severit
 Currently, emergency services have limited methods to collect data to detect or monitor remote bushfires in their early stages. The first step is to build up a dataset of bushfire information from a range of sensors. A basic user-responsive prototype has been produced to collect and monitor bushfire data in low intensity areas which has been showcased here.
 
 
-
+<img src="https://i.ibb.co/n8CS2R5/amp.jpg" width="400">
 
 
 Code to hold the data collection from different sensors for bush fire tracking&amp;prevention 
