@@ -86,6 +86,16 @@
 #include <errno.h>   // Error integer and strerror() function
 #include <termios.h> // Contains POSIX terminal control definitions
 #include <unistd.h>  // write(), read(), close()
+#include <iostream>
+#include <unistd.h>
+
+#include <unistd.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <stdio.h>
+
+#include <signal.h>
+#include <stdio.h>
 
 int main()
 {
@@ -140,13 +150,20 @@ int main()
     //unsigned char msg[] = { 'H', 'e', 'l', 'l', 'o', '\r' };
     // write(serial_port, "Hello, world!", sizeof(msg));
 
-    unsigned char msg[] = { '1' };
-     write(serial_port, "1", sizeof(msg));
+    unsigned char msg[] = {'1'};
+    write(serial_port, "1", sizeof(msg));
+    bool state = false;
+    pid_t pid;
+
+    pid = fork();
     while (1)
     {
         // Allocate memory for read buffer, set size according to your needs
-        char read_buf[256];
+        // bool read_buf;
 
+        bool read_buf;
+
+        bool tracker;
         // Normally you wouldn't do this memset() call, but since we will just receive
         // ASCII data for this example, we'll set everything to 0 so we can
         // call printf() easily.
@@ -167,10 +184,36 @@ int main()
         // Here we assume we received ASCII data, but you might be sending raw bytes (in that case, don't try and
         // print it to the screen like this!)
         //printf("Read %i bytes. Received message: %s", num_bytes, read_buf);
-        printf(read_buf);
-        
+        std::cout << read_buf << std::endl;
+        if (read_buf == true)
+        {
+            state = true;
+            tracker = true;
+        }
+        else if (read_buf == false)
+        {
+            tracker = false;
+        }
+
+        if (state == true && tracker == true)
+        {
+
+            system("gnome-terminal -- sh -c 'roslaunch flir_one_node flir_data_record.launch'");
+            // system("roslaunch flir_one_node flir_data_record.launch");
+            state = false;
+        }
+        else if (tracker == false && state == false)
+        {
+            // string s = "pkill -f " + filename "+";
+            // sleep 2;
+            // pkill - 9 - f "+filename;
+            //     system(s.c_str());
+
+            system("kill -9 $(ps ax | grep flir | fgrep -v grep | awk '{ print $1 }')");
+        }
+       
     }
-    write(serial_port, "0", sizeof(msg));
+    // write(serial_port, "0", sizeof(msg));
     close(serial_port);
 
     return 0; // success

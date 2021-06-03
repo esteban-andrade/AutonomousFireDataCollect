@@ -27,12 +27,17 @@ def read_serial_data(serial):
     serial_data = []
    
   
-    serial_line = serial.readline()
+    # serial_line = serial.readline()
      
-    serial_data.append(serial_line)
+    # serial_data.append(serial_line)
          
 
-    return serial_data
+    # return serial_data
+
+    bytesToRead = serial.inWaiting()
+    serial.read(bytesToRead)
+
+    return bytesToRead
 
 def send_serial_data(serial,x):
 
@@ -53,23 +58,25 @@ def main():
         is_recording =False
         serial_data = read_serial_data(serial_obj)
 
-        if serial_data == 'r':
+        if serial_data == '1':
 
             ############## Starts process######
             time.sleep(READ_DELAY_SECONDS)
-            proc = subprocess.Popen(
-                [record], stdout=subprocess.PIPE,  shell=True, preexec_fn=os.setsid)
-            send_serial_data(serial_obj,"x") # to change LEDs
+            print("record")
+            # proc = subprocess.Popen(
+            #     [record], stdout=subprocess.PIPE,  shell=True, preexec_fn=os.setsid)
+            # # send_serial_data(serial_obj,"x") # to change LEDs
             is_recording = True
 
             while(is_recording):
                 serial_data = read_serial_data(serial_obj)
 
-                if serial_data == 's':
+                if serial_data == '0':
                     time.sleep(READ_DELAY_SECONDS)
-                    os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+                    # os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+                    print("stop")
                     time.sleep(READ_DELAY_SECONDS)
-                    send_serial_data(serial_obj, "y") #to change LEDS
+                    # send_serial_data(serial_obj, "y") #to change LEDS
                     is_recording=False
                    
                       
