@@ -86,7 +86,10 @@ If the Visualization Launch file is triggered it will use RQT as default for ima
 
 The sensor data will be parsed using strings. 
 Ensure that the microcontroller is defined as `/dev/ttyACM0`
+
+
 The Node will send serial data to the microcontroller when it  is required to start and stop the sensor data acquisition process.
-The topic `/sensors/data` will receive the sensor data from the teensy and it will parse the serial data as string and subsequenly advertised in this ROS topic.
+
+he topic `/sensors/data` will receive the sensor data from the teensy and it will parse the serial data as string and subsequenly advertised in this ROS topic.
 
 
