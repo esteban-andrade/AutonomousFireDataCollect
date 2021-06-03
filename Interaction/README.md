@@ -17,3 +17,9 @@ This will generate an executable(program) that will be added to the `start-up` a
 It will read data from the serial port `/dev/ttyACM0` amd it will wait from input from the user in order to start recording data.
 
 Once the user pressed the stop button it will terminate the data recording process.
+
+## Integration
+To integrate this open the `start-up` applications option in Ubuntu.
+Add the path to the filed to the generated executable  `integration` to the new option and add a valid name.
+
+Once the system reboots the application will start automatically.

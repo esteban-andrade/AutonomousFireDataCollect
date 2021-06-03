@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # set the project name
-project(Tutorial)
+project(integration)
 
 # add the executable
-add_executable(Tutorial test.cpp)
+add_executable(integration test.cpp)
