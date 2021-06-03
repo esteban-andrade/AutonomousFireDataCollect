@@ -15,7 +15,3 @@ Currently, emergency services have limited methods to collect data to detect or 
 * The Interaction folder contains the scripts required to accept commands from the Teensy device to the computer to trigger start and stop recording.
 * [PLEASE UPDATE]The PythonSerial folder contains the code to capture the serial output from the teensy.
 * The flire_one_node folder contains the files required to setup the FLIR ONE camera.
-
-
-Code to hold the data collection from different sensors for bush fire tracking&amp;prevention 
-Here we will find the content for the thermal as well as the electronic firmware for electronics interface.
