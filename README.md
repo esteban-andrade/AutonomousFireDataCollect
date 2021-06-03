@@ -13,5 +13,5 @@ Currently, emergency services have limited methods to collect data to detect or 
 * The Data Processing folder contains the script required to plot data in MATLAB from a video source and data set.
 * The Electronics folder contains the code and PCB schematic/design files created for the prototype device.
 * The Interaction folder contains the scripts required to accept commands from the Teensy device to the computer to trigger start and stop recording.
-* [PLEASE UPDATE]The PythonSerial folder contains the code to capture the serial output from the teensy.
+* [PLEASE UPDATE]The PythonSerial folder contains the code to capture the serial output from the teensy for the prototype device
 * The flire_one_node folder contains the files required to setup the FLIR ONE camera.
