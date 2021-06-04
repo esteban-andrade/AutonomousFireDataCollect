@@ -30,11 +30,19 @@ Ensure that this git repository is contained within the `src` folder of the `cat
 
 Run `catkin_make` from within the `catkin_ws` directory. Otherwise perform a `catkin build`
 
-Ensure the package can be run by executing the following command from the `catkin_ws` directory:
+Ensure the package can be run by executing the following command from the `catkin_ws` directory: 
 
 ```
 source devel/setup.bash
 ```
+
+If there is an issue once when running the program starts on the computer unit. Refresh the bashrc.
+```
+source devel/setup.bash
+```
+
+
+
 
 Ensure an instance of ROS is running on the machine
 
