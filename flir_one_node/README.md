@@ -53,7 +53,7 @@ Alternatively there are a series of launch files that can be used to start the r
 
 ### For Visualization 
 
-Type the following command in a terminal. It will styart the node and it will broadcast both RBG and Depth Images
+Type the following command in a terminal. It will start the node and it will broadcast both RBG and Depth Images
 
 ```
 roslaunch flir_one_node flir_data_vis.launch
@@ -61,7 +61,7 @@ roslaunch flir_one_node flir_data_vis.launch
 
 ### For Recording
  
- Type the following command in tyhe terminal to record a ROSBAG of images and sensor data. The ROSBAG will use the timestamp of when the recording process started.
+ Type the following command in the terminal to record a ROSBAG of images and sensor data. The ROSBAG will use the timestamp of when the recording process started.
  
 ```
 roslaunch flir_one_node flir_data_vis.launch
