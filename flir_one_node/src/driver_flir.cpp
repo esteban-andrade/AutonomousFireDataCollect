@@ -72,7 +72,7 @@ namespace driver_flir
       image_ir = im16;
 
       cv::Mat rawRgb = cv::Mat(1, JpgSize, CV_8UC1, &packet[28 + ThermalSize]);
-      cv::Mat decodedImage = cv::imdecode(rawRgb, CV_LOAD_IMAGE_COLOR);
+      cv::Mat decodedImage = cv::imdecode(rawRgb, cv::IMREAD_COLOR);
       cv::cvtColor(decodedImage, decodedImage, cv::COLOR_BGR2RGB);
       image_rgb = decodedImage;
 
